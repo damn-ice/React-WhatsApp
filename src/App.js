@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import DashBoard from './components/DashBoard';
+import Login from "./components/Login";
+import { ContactsProvider } from './contexts/ContactsProvider';
+import ConversationProvider from './contexts/ConversationProvider';
+import SocketProvider from './contexts/SocketProvider';
+import useLocalStorage from './hooks/useLocalStorage';
+
+
+
+
+/*
+  In short circuit (i.e let name = 'Joel' && 'Priye' or let age = 8 || 12), If the && short
+    circuit is used it will return the last true evaluation but if || is used it will return the first 
+    true evaluation.
+*/ 
+
 
 function App() {
+  const [id, setId] = useLocalStorage('id');
+
+  const dashBoard = (
+    <SocketProvider id={id}>
+      <ContactsProvider>
+        <ConversationProvider id={id}>
+          <DashBoard id={id} />
+        </ConversationProvider>
+      </ContactsProvider>
+    </SocketProvider>
+  )
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    id ? dashBoard : <Login onSetId={setId} />
   );
 }
 
